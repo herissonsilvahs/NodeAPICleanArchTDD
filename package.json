@@ -2,5 +2,24 @@
   "name": "NodeApiTDDClean",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "scripts": {},
+  "lint-staged": {
+    "*.js": [
+      "standard --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "lint-staged": "^10.0.3",
+    "standard": "^14.3.1"
+  },
+  "dependencies": {
+    "husky": "^4.2.1"
+  }
 }
