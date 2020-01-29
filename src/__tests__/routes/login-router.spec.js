@@ -3,7 +3,7 @@ const LoginRouter = {
     try {
       const { email, password } = httpRequest.body
       if (!email || !password) {
-        return { status: 400 }
+        return { status: 400, message: 'Missing params' }
       }
     } catch (err) {
       const objError = {
