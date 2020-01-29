@@ -1,22 +1,4 @@
-const LoginRouter = {
-  route: (httpRequest) => {
-    try {
-      const { email, password } = httpRequest.body
-      if (!email || !password) {
-        return { status: 400, message: 'Missing params' }
-      }
-    } catch (err) {
-      const objError = {
-        error: {
-          errorName: err.name,
-          errorMessage: err.message
-        }
-      }
-      console.log('Error: ', objError)
-      return { status: 500, message: 'Internal server error' }
-    }
-  }
-}
+const LoginRouter = require('../../presentation/routes/login-router')
 
 describe('Login router', () => {
   test('Should return 400 if no email is provider', () => {
@@ -27,7 +9,7 @@ describe('Login router', () => {
       }
     }
 
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = sut.loginRouter(httpRequest)
     expect(httpResponse.status).toBe(400)
   })
   test('Should return 400 if no password is provider', () => {
@@ -38,13 +20,13 @@ describe('Login router', () => {
       }
     }
 
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = sut.loginRouter(httpRequest)
     expect(httpResponse.status).toBe(400)
   })
 
   test('Should return 500 if some implementation error occurred', () => {
     const sut = LoginRouter
-    const httpResponse = sut.route()
+    const httpResponse = sut.loginRouter()
     expect(httpResponse.status).toBe(500)
   })
 })
