@@ -3,7 +3,8 @@ const LoginRouter = require('../../presentation/routes/login-router')
 const makeSut = () => {
   class AuthUseCaseSpy {
     auth (email, password) {
-      return { email, password }
+      this.email = email
+      this.password = password
     }
   }
   const authUseCaseSpy = new AuthUseCaseSpy()
@@ -40,5 +41,17 @@ describe('Login router', () => {
     const { sut } = makeSut()
     const httpResponse = sut.route({})
     expect(httpResponse.status).toBe(500)
+  })
+  test('Should call AuthUseCase with correct params', () => {
+    const { sut, authUseCaseSpy } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'herisson@gmail.com',
+        password: '12345678'
+      }
+    }
+    sut.route(httpRequest)
+    expect(authUseCaseSpy.email).toBe(httpRequest.body.email)
+    expect(authUseCaseSpy.password).toBe(httpRequest.body.password)
   })
 })
