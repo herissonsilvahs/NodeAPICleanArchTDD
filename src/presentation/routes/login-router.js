@@ -1,19 +1,20 @@
-module.exports = {
-  loginRouter: (httpRequest) => {
+module.exports = class LoginRouter {
+  constructor (authUseCase) {
+    this.authUseCase = authUseCase
+  }
+
+  route (httpRequest) {
     try {
       const { email, password } = httpRequest.body
       if (!email || !password) {
         return { status: 400, message: 'Missing params' }
       }
+      this.authUseCase.auth(email, password)
     } catch (err) {
-      const objError = {
-        error: {
-          errorName: err.name,
-          errorMessage: err.message
-        }
+      return {
+        status: 500,
+        body: { message: 'Server error' }
       }
-      console.log('Error: ', objError)
-      return { status: 500, message: 'Internal server error' }
     }
   }
 }
