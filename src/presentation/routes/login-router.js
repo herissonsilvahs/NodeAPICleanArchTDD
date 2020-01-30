@@ -3,13 +3,13 @@ module.exports = class LoginRouter {
     this.authUseCase = authUseCase
   }
 
-  route (httpRequest) {
+  async route (httpRequest) {
     try {
       const { email, password } = httpRequest.body
       if (!email || !password) {
         return { status: 400, body: { message: 'Missing params' } }
       }
-      const accessToken = this.authUseCase.auth(email, password)
+      const accessToken = await this.authUseCase.auth(email, password)
       if (!accessToken) {
         return { status: 401, body: { message: 'Unauthorized' } }
       }
@@ -17,7 +17,7 @@ module.exports = class LoginRouter {
     } catch (err) {
       return {
         status: 500,
-        body: { message: 'Server error' }
+        body: { message: 'Internal error' }
       }
     }
   }

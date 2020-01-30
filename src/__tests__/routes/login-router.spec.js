@@ -17,33 +17,33 @@ const makeSut = () => {
 }
 
 describe('Login router', () => {
-  test('Should return 400 if no email is provider', () => {
+  test('Should return 400 if no email is provider', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
         password: '12345678'
       }
     }
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.status).toBe(400)
   })
-  test('Should return 400 if no password is provider', () => {
+  test('Should return 400 if no password is provider', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
         email: 'herisson@gmail.com'
       }
     }
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.status).toBe(400)
   })
 
-  test('Should return 500 if some implementation error occurred', () => {
+  test('Should return 500 if some implementation error occurred', async () => {
     const { sut } = makeSut()
-    const httpResponse = sut.route({})
+    const httpResponse = await sut.route({})
     expect(httpResponse.status).toBe(500)
   })
-  test('Should call AuthUseCase with correct params', () => {
+  test('Should call AuthUseCase with correct params', async () => {
     const { sut, authUseCaseSpy } = makeSut()
     const httpRequest = {
       body: {
@@ -51,11 +51,11 @@ describe('Login router', () => {
         password: '12345678'
       }
     }
-    sut.route(httpRequest)
+    await sut.route(httpRequest)
     expect(authUseCaseSpy.email).toBe(httpRequest.body.email)
     expect(authUseCaseSpy.password).toBe(httpRequest.body.password)
   })
-  test('Should return 401 when invalid credentials', () => {
+  test('Should return 401 when invalid credentials', async () => {
     const { sut, authUseCaseSpy } = makeSut()
     authUseCaseSpy.accessToken = null
     const httpRequest = {
@@ -64,10 +64,10 @@ describe('Login router', () => {
         password: '12345678'
       }
     }
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.status).toBe(401)
   })
-  test('Should return 200 when valid credentials', () => {
+  test('Should return 200 when valid credentials', async () => {
     const { sut, authUseCaseSpy } = makeSut()
     authUseCaseSpy.accessToken = 'any_token'
     const httpRequest = {
@@ -76,7 +76,7 @@ describe('Login router', () => {
         password: '12345678'
       }
     }
-    const httpResponse = sut.route(httpRequest)
+    const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.status).toBe(200)
   })
 })
