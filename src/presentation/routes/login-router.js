@@ -1,6 +1,7 @@
 module.exports = class LoginRouter {
-  constructor (authUseCase) {
+  constructor (authUseCase, emailValidator) {
     this.authUseCase = authUseCase
+    this.emailValidator = emailValidator
   }
 
   async route (httpRequest) {
@@ -8,6 +9,9 @@ module.exports = class LoginRouter {
       const { email, password } = httpRequest.body
       if (!email || !password) {
         return { status: 400, body: { message: 'Missing params' } }
+      }
+      if (!this.emailValidator.isValid(email)) {
+        return { status: 400, body: { message: 'Invalid email' } }
       }
       const accessToken = await this.authUseCase.auth(email, password)
       if (!accessToken) {

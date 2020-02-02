@@ -1,6 +1,15 @@
 const LoginRouter = require('../../presentation/routes/login-router')
 
-const makeSut = () => {
+const makeEmailValidator = () => {
+  class EmailValidator {
+    isValid (email) {
+      return /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)
+    }
+  }
+  return new EmailValidator()
+}
+
+const makeAuthUseCase = () => {
   class AuthUseCaseSpy {
     auth (email, password) {
       this.email = email
@@ -8,11 +17,17 @@ const makeSut = () => {
       return this.accessToken
     }
   }
-  const authUseCaseSpy = new AuthUseCaseSpy()
-  const sut = new LoginRouter(authUseCaseSpy)
+  return new AuthUseCaseSpy()
+}
+
+const makeSut = () => {
+  const authUseCaseSpy = makeAuthUseCase()
+  const emailValidatorSpy = makeEmailValidator()
+  const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
   return {
     sut,
-    authUseCaseSpy
+    authUseCaseSpy,
+    emailValidatorSpy
   }
 }
 
@@ -78,5 +93,16 @@ describe('Login router', () => {
     }
     const httpResponse = await sut.route(httpRequest)
     expect(httpResponse.status).toBe(200)
+  })
+  test('Should return 400 if email is invalid', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        email: 'herissongmail.com',
+        password: '12345678'
+      }
+    }
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.status).toBe(400)
   })
 })
