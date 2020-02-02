@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --silent --noStackTrace"
+    "test": "jest --silent --noStackTrace",
+    "test:ci": "jest --coverage --noStackTrace"
   },
   "standard": {
     "env": ["jest"]
@@ -17,7 +18,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn test:ci"
     }
   },
   "license": "MIT",
