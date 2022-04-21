@@ -7,7 +7,9 @@
     "test:ci": "jest --coverage --noStackTrace"
   },
   "standard": {
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
   "lint-staged": {
     "*.js": [
